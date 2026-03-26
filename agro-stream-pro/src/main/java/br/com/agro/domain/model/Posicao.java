@@ -1,5 +1,7 @@
 package br.com.agro.domain.model;
 
-public record Posicao() {
-
-}
+// record que representa um coordenada geografica
+public record Posicao(
+			double latitude,
+			double longitude
+		) {}
