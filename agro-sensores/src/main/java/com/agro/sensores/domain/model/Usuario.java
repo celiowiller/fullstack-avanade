@@ -96,7 +96,7 @@ public class Usuario{
 			}
 			
 			if(senha == null || senha.length() < 6) {
-				throw new ValidacaoException("Sua senha deve ter pelo meno 6 caracteres");
+				throw new ValidacaoException("Sua senha deve ter pelo menos 6 caracteres");
 			}
 			
 			this.id = id;
