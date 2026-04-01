@@ -11,18 +11,21 @@ import lombok.ToString;
 @ToString
 public class Leitura {
 	private Long id;
-	private String sensorId;
+	//private String sensorId;
+	private Sensor sensor;
 	private Double valor;
 	private LocalDateTime dataHora;
 	
 	public Leitura(
 			Long id,
-			String sensorId,
+			//String sensorId,
+			// Sensor sensorId,
+			Sensor sensor,
 			Double valor,
 			LocalDateTime dataHora
 			) {
 		// validações
-		if(sensorId == null || sensorId.isBlank()) {
+		if(sensor == null) {
 			throw new ValidacaoException("SensorId é obrigatorio!");
 		}
 		
@@ -35,7 +38,7 @@ public class Leitura {
 		}
 		
 		 this.id = id;
-		 this.sensorId = sensorId;
+		 this.sensor = sensor;
 		 this.valor = valor;
 		 this.dataHora = dataHora;
 	}

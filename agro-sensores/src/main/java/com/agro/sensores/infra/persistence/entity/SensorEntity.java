@@ -2,6 +2,7 @@ package com.agro.sensores.infra.persistence.entity;
 // entidade que representa sensores cadastrados no sistema
 
 import com.agro.sensores.domain.enums.TipoSensor;
+import com.agro.sensores.domain.enums.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+
+@AllArgsConstructor // - esta annotation gera um construtor com todos os campos/fields
+//da classe como argumentos
 @EqualsAndHashCode(of = "id")
 public class SensorEntity {
 	@Id

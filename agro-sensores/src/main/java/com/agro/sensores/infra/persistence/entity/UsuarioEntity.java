@@ -27,7 +27,7 @@ import lombok.*;
 // @NoArgsConstructor //- esta annotation gera automaticamente um construtor-padrão para 
 // a classe de referencia public Usuario(){}
 
-// @AllArgsConstructor // - esta annotation gera um construtor com todos os campos/fields
+ @AllArgsConstructor // - esta annotation gera um construtor com todos os campos/fields
 // da classe como argumentos
 
 //@Data // "engloba" tudo: a controversias - na verdade @Data ele é um "pacote" 
