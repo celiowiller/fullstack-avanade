@@ -1,5 +1,13 @@
 package com.agro.sensores.infra.persistence.entity;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.agro.sensores.domain.enums.UserRole;
 
 import jakarta.persistence.Column;
@@ -36,7 +44,11 @@ import lombok.*;
 @EqualsAndHashCode(of = "id") // aqui, a annotation indica que o hash code precisar ser igual
 // ao indicado no id do usuario
 
-public class UsuarioEntity {
+// em função de usarmos o contexto do Spring Security é necessario, aqui, implementarmos a 
+// interface UserDetails - esta interface "obriga" a existencia do método getAuthorities()
+// Caso não usemos esta abordagem, corremos o risco de o Spring não "saber" como extrair
+// as roles(papeis)  do nosso objeto para autorizar o acesso as nossas rota "privadas"
+public class UsuarioEntity implements UserDetails{
 
 	//id unico gerado automaticamente
 	@Id // annotation que indica a chave-primaria da table
@@ -57,5 +69,73 @@ public class UsuarioEntity {
 	@Column(nullable=false)
 	private UserRole role;
 	
+	// =============== IMPLEMENTAÇÃO DO getAuthorities() ===================
+	public Collection<? extends GrantedAuthority> getAuthorities(){
+		// se nosso usuario for um ADMIN, ele "ganha" todas as permissões. 
+		// se for USER, "ganha" somente a permissão de usuario comum
+		if(this.role == UserRole.ADMIN) {
+			return List.of(
+						new SimpleGrantedAuthority("ROLE_ADMIN"),
+						new SimpleGrantedAuthority("ROLE_USER")
+					);
+		}else {
+			return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+		}
+	}
+	
 	public UsuarioEntity() {}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return senha;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return login;
+	}
+	
+	@Override
+	public boolean isAccountNonExpired() {
+		return true; // conta não expirada
+	}
+	
+	@Override
+	public boolean isAccountNonLocked() {
+		return true; // conta não bloqueada
+	}
+	
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return true; // usuario está ativo
+	}
 }
+
+/*
+ *  Collection<? extends GrantedAuthority>: o spring não esta "preocupado" com qual é 
+ *  o tipo de conjunto de dados que ele vai devolver. Por isso a nossa coleção/collection
+ *  é generica. A expressão - ? extends GrantedAuthority - significa que, seja qual for o
+ *  objeto, que implemente a interface atende ao Spring 
+ *  
+ *  SimpleGrantedAuthority: esta é a implementação padrão do Spring para uma permissão
+ *  simples baseada em texto. Porque o Spring Security é "doido" numa string.
+ *  
+ *  // =============== IMPLEMENTAÇÃO DO getAuthorities() para 6+ niveis ===================
+ *  
+ *  definir uma entity par ao proposito de armazenamento das permissoes
+ *  usando a relação @ManyToMany e iterando sobre as roles
+ *  
+	public Collection<? extends GrantedAuthority> getAuthorities(){
+		return permissoes.stream()
+			.map(p -> new SimpleGrantedAuthority(p.geNome()))
+			.collect(Collectors.toList())
+	}
+ *  
+ * */

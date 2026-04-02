@@ -3,13 +3,19 @@ package com.agro.sensores.infra.persistence.adapter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import com.agro.sensores.domain.model.Leitura;
 import com.agro.sensores.domain.model.Sensor;
 import com.agro.sensores.domain.repository.LeituraRepository;
 import com.agro.sensores.infra.persistence.entity.LeituraEntity;
 import com.agro.sensores.infra.persistence.entity.SensorEntity;
 import com.agro.sensores.infra.persistence.repository.JpaLeituraRepository;
+//import com.agro.sensores.infra.persistence.repository.JpaSensorRepository;
 
+import lombok.RequiredArgsConstructor;
+@Component
+@RequiredArgsConstructor
 public class LeituraRepositoryAdapter implements LeituraRepository {
 	private final JpaLeituraRepository jpa;
 	
