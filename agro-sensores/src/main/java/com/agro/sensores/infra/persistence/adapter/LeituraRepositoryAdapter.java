@@ -11,13 +11,15 @@ import com.agro.sensores.domain.repository.LeituraRepository;
 import com.agro.sensores.infra.persistence.entity.LeituraEntity;
 import com.agro.sensores.infra.persistence.entity.SensorEntity;
 import com.agro.sensores.infra.persistence.repository.JpaLeituraRepository;
-//import com.agro.sensores.infra.persistence.repository.JpaSensorRepository;
+import com.agro.sensores.infra.persistence.repository.JpaSensorRepository;
 
 import lombok.RequiredArgsConstructor;
+
 @Component
 @RequiredArgsConstructor
 public class LeituraRepositoryAdapter implements LeituraRepository {
 	private final JpaLeituraRepository jpa;
+	private final JpaSensorRepository sensorRepository;
 	
 	public Leitura salvar(Leitura leitura) {
 		return toDomain(jpa.save(toEntity(leitura)));
@@ -31,15 +33,7 @@ public class LeituraRepositoryAdapter implements LeituraRepository {
 	
 	// Mapper: Entity -> Domain
 	private Leitura toDomain(LeituraEntity entity) {
-		// precisamos converter o Sensor que no esquema
-		/*return new Leitura(
-					entity.getId(),
-					entity.getSensor().getId(),
-					entity.getValor(),
-					entity.getDataHora()
-					
-				);*/
-		
+				
 		// 1º. "traduzimos" o "inquilino" (Sensor)
 
 		Sensor sensorDomain = new Sensor(
@@ -54,32 +48,24 @@ public class LeituraRepositoryAdapter implements LeituraRepository {
 					entity.getId(),
 				    sensorDomain, // <---- aqui, passamos o objeto 
 					entity.getValor(),
-					entity.getDataHora()
+					entity.getDataHora(),
+					entity.getLocalizacao() // <--- indicado para o tratamento e uso de UseCases
 				);
 	}
-	
-	// Mapper: Domain -> Entity
+		
 	private LeituraEntity toEntity(Leitura leitura) {
-		
-		// neste passo, vamos criar uma "casca" de SensorEntity apenas com o ID 
-		// para que o JPA possa saber a qual sensor o id pertence
-		SensorEntity sensorEntity = new SensorEntity();
-		sensorEntity.setId(leitura.getSensor().getId()); // 
-		
-		// retorna a Entity com os campos que, realmente, estão disponiveis no ocntexto
-		return new LeituraEntity(
-					/*leitura.getId(),
-					//leitura.getSensorId(),
-					leitura,
-					leitura.getValor(),
-					leitura.getDataHora(),
-					leitura.isRecente()
-					//leitura.isValorValido()*/
-				leitura.getId(),
-				sensorEntity, // <---- aqui esta o objeto e os elementos que, à ele, pertencem
-				leitura.getValor(),
-				leitura.getDataHora()
-				);
+
+	    SensorEntity sensorEntity = sensorRepository
+	        .findById(leitura.getSensor().getId())
+	        .orElseThrow(() -> new RuntimeException("Sensor não encontrado"));
+
+	    return new LeituraEntity(
+	        leitura.getId(),
+	        sensorEntity,
+	        leitura.getValor(),
+	        leitura.getDataHora(),
+	        leitura.getLocalizacao() // <--- indicado para o tratamento e uso de UseCases
+	    );
 	}
 	
 }

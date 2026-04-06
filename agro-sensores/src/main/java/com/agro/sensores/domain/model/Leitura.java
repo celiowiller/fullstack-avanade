@@ -15,6 +15,7 @@ public class Leitura {
 	private Sensor sensor;
 	private Double valor;
 	private LocalDateTime dataHora;
+	private String localizacao; // ADICIONAR
 	
 	public Leitura(
 			Long id,
@@ -22,7 +23,8 @@ public class Leitura {
 			// Sensor sensorId,
 			Sensor sensor,
 			Double valor,
-			LocalDateTime dataHora
+			LocalDateTime dataHora,
+			String localizacao // ADICIONAR
 			) {
 		// validações
 		if(sensor == null) {
@@ -41,6 +43,7 @@ public class Leitura {
 		 this.sensor = sensor;
 		 this.valor = valor;
 		 this.dataHora = dataHora;
+		 this.localizacao = localizacao; // ADICIONAR
 	}
 	
 	//comportamentos do dominio

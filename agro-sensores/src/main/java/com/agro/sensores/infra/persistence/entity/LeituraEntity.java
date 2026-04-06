@@ -2,8 +2,6 @@ package com.agro.sensores.infra.persistence.entity;
 
 import java.time.LocalDateTime;
 
-import com.agro.sensores.domain.enums.TipoSensor;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +31,7 @@ public class LeituraEntity {
 	// Relacionamento com sensor(muitos para um)
 	@ManyToOne
 	@JoinColumn(name = "sensor_id", nullable = false)
+	//@com.fasterxml.jackson.annotation.JsonIgnore // <--- ADICIONE ISSO AQUI
 	private SensorEntity sensor;
 	
 	// valor da leitura
@@ -43,6 +42,7 @@ public class LeituraEntity {
 	@Column(nullable = false)
 	private LocalDateTime dataHora;
 	
-	
-	
+	@Column(nullable = false)
+	private String localizacao;	
+		
 }

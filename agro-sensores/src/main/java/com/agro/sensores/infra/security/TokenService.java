@@ -19,7 +19,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 public class TokenService {
 	// chave secreta do JWT (posteriormente, vamos definir sua origem no arquivo
 	// application.properties)
-	@Value("${api.security.secret}")
+	//@Value("${api.security.secret}")
+	 //Fallback direto no @Value - resolve o erro de placeholder
+	@Value("${api.security.secret:default-dev-secret-123456}")
 	private String secret;
 	
 	// agora, vamos criar o processo que gera o token
