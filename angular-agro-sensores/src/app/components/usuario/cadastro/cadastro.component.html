@@ -1,0 +1,72 @@
+<!-- definir a view do componente -->
+ <div class="cadastro-wrapper">
+    <mat-card class="cadastro-card"> <!-- recurso para a criação de cards-->
+
+        <mat-card-header>
+            <mat-card-title>{{ tituloComp }}</mat-card-title>
+            <!--acima, temos o interpolation binding: que visa fazer o seguinte: simplesmente vincular na view um  valor de propriedade descrita e definida na camada lógica e exibi-la - .ts do componente; o contexto de vinculação é o uso de {{}} chaves duplas-->
+            <mat-card-subtitle>{{ subtituloComp }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <!-- aqui, será criado o formulario-->
+        <mat-card-content>
+            <form [formGroup] = "cadastroFormulario" (ngSubmit) = "aoCadastrar()"><!-- tag usada para definir um fomulario html
+                acima, estamos fazendo, conforme vimos no diagrama da apostila, um property binding; o contexto de vinculação do property binding é o uso dos caracteres colchetes; o property binding é muito mais poderoso do que o interpolation binding: por que? porque o property binding - além de vincular valores e exibi-los, quando necessário, também pode determinar comportamentos para a view!!!!
+
+                tambem estamos referenciando a diretiva(directive) formGroup, ela, é que da a possibilidade da camada lógica "controlar" o comportamento do formulario - definido como valor da propriedade cadstroFormulario
+
+                 na segunda parte, temos: o EVENT BINDING - seu contexto de vinculação é o uso dos caracteres () parenteses; seu objetivo, quando acionando - event binding - deve vincular,  a partir da view uma chamada de evento para algum proposito - da mesma forma que property binding - tambemdevemos definir a "natureza" da vinculação 
+                 estamos usando a diretiva ngSubmit - que determina que um formulario angular envio os dados obtidos para algum "lugar"
+                -->
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Login</mat-label>
+                    <input type="email" matInput palceholder="Insira o email para cadastro" formControlName="login" />
+                    <!-- matInput: recurso do material para "transformar" este input html num material input
+                        formControlName: esta é uma diretiva que determina que este input "precisa" de um comportamento 
+                    -->
+                </mat-form-field>
+
+                 <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Senha</mat-label>
+                    <input type="password" matInput palceholder="Insira sua senha para cadastro" formControlName="senha" />
+                    <!-- matInput: recurso do material para "transformar" este input html num material input
+                        formControlName: esta é uma diretiva que determina que este input "precisa" de um comportamento 
+                    -->
+                </mat-form-field>
+
+                 <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Perfil</mat-label>
+                    <mat-select formControlName="role">
+                        <!-- *ngFor - @for: é uma diretiva de estrutura do angular; esta diretiva faz o seguinte -> ao ser associada a uma expressão de avalização a diretiva REPETE - UMA DETERMINA ESTRUTURA HTML DA VIEW -->
+                        @for(perfil of perfisDisponiveis; track perfil){
+                            <mat-option [value]="perfil">{{ perfil }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <div class="button-group">
+                    <button 
+                        mat-button 
+                        type="button"
+                        (click) = "cancelar()"
+                    >
+                        CANCELAR
+                    </button>
+
+                    <button
+                        mat-raised-button 
+                        color="accent"
+                        type="submit"
+                        [disabled] = "cadastroFormulario.invalid"
+                    >
+                        FINALIZAR CADASTRO
+                    </button>
+                </div>
+
+            </form>
+        </mat-card-content>
+
+
+    </mat-card>
+ </div>

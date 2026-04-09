@@ -37,7 +37,7 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-        		// ATIVANDO O CORS AQUI
+        		// *****ATIVANDO O CORS AQUI
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable()) // Mantém desativado para API
                 // CSRF: Cross-Site-Request Forgery

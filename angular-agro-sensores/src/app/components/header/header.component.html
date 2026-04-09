@@ -1,0 +1,42 @@
+<mat-toolbar color="primary" class="header-toolbar mat-elevation-z6">
+  <div class="logo-section" routerLink="/home">
+    <mat-icon class="logo-icon">agriculture</mat-icon>
+    <span class="titulo-sistema">Agro Telemetria AERS</span>
+  </div>
+
+  <span class="espacador"></span>
+
+  @if (estaLogado()) {
+    <nav class="nav-links">
+      <button mat-button routerLink="/home" routerLinkActive="active-link">
+        <mat-icon>home</mat-icon>
+        HOME
+      </button>
+
+      <button mat-button routerLink="/sensores" routerLinkActive="active-link">
+        <mat-icon>sensors</mat-icon>
+        SENSORES
+      </button>
+
+      <button mat-button routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon>bar_chart</mat-icon>
+        DASHBOARD
+      </button>
+    </nav>
+
+    <div class="user-section">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="sair()">
+          <mat-icon color="warn">logout</mat-icon>
+          <span>Encerrar Sessão</span>
+        </button>
+      </mat-menu>
+    </div>
+  } @else {
+    <button mat-button routerLink="/login">ENTRAR</button>
+    <button mat-stroked-button color="accent" routerLink="/cadastro">CADASTRAR</button>
+  }
+</mat-toolbar>
