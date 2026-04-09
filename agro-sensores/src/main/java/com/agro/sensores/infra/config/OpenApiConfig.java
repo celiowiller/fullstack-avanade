@@ -11,10 +11,18 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 // Classe de configuração do Swagger / OpenAPI
+// ou seja, é esta estrutura de codigo que permite ao Swagger UI - Interface do swagger
+// "conversar" com o noo SecurityFilter.
 @Configuration
 public class OpenApiConfig {
 
     // Bean principal que configura documentação da API
+    // @Bean é um dos "pilares" do contexto de injeção de dependencia!
+    /*
+    * quando anotamos qualquer instrução como @Bean estamos dizendo que: o Spring execute este
+    * // método apenas uma vez(padrão) durante a inicialização e e matenha/guarde o objeto
+    *     retornado dentro do AplicationContext - ou seja, temos um singleton!
+    * */
     @Bean
     public OpenAPI customOpenAPI() {
 

@@ -15,14 +15,15 @@ import lombok.RequiredArgsConstructor;
 
 //Controller responsável por autenticação
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth") // <--- aqui está o contexto rota/endpoint principal
 @RequiredArgsConstructor
 public class AuthController {
 
  private final AutenticarUsuarioUseCase useCase;
 
  // Endpoint de login
- @PostMapping("/login")
+    // no swagger: auth/login
+ @PostMapping("/login")// <--- aqui está o contexto rota/endpoint especifico
  public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto) {
 
      // Executa autenticação

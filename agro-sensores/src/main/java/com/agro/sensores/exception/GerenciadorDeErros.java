@@ -57,6 +57,9 @@ public class GerenciadorDeErros {
             .body(new DetalheErro("INTERNAL_ERROR", "Erro interno inesperado", LocalDateTime.now()));
     }
 
+    // este instrumento lógico é um helper (auxiliador) - elegante; para que seja possivl
+    // "transformar" erros, eventualmente, complexos - do Spring Validation em
+    // "saidas" mais simples - para leitura e observação
     private record ErroValidacao(String campo, String mensagem) {
         public ErroValidacao(FieldError erro) {
             this(erro.getField(), erro.getDefaultMessage());

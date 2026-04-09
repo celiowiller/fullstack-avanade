@@ -21,13 +21,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SensorController {
 
+    // varias DIs
     private final CadastrarSensorUseCase cadastrarSensorUseCase;
     private final AtualizarSensorUseCase atualizarUseCase;
     private final ListarSensoresUseCase listarUseCase;
     private final ListarSensoresComLeiturasUseCase listarComLeiturasUseCase;
     private final AtualizarLocalizacaoSensorUseCase atualizarLocalizacaoUseCase;
 
-    // 1️. CRIAR SENSOR (ADMIN)
+    // 1️. CRIAR SENSOR (ADMIN) - para criar um sensor temos de ter permissão de ADMIN
+    // este contexto é determinado pela annotation @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> criar(@RequestBody @Valid CriarSensorDTO dto) {
@@ -36,6 +38,7 @@ public class SensorController {
     }
 
     // 2️. ATUALIZAR SENSOR (ADMIN)
+    // no swagger, vemos o seguinte endpoint: sensores/{id}
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> atualizar(
@@ -66,6 +69,7 @@ public class SensorController {
 
     // 6️. DELETAR SENSOR (ADMIN)
     @DeleteMapping("/{id}")
+    // sensores/{id}
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletar(@PathVariable String id) {
         listarUseCase.deletar(id);
@@ -75,6 +79,7 @@ public class SensorController {
     // 7️. ATUALIZAR LOCALIZAÇÃO (ADMIN)
     @PutMapping("/{id}/localizacao")
     @PreAuthorize("hasRole('ADMIN')")
+    // sensores/{id}/localizacao
     public ResponseEntity<Void> atualizarLocalizacao(
             @PathVariable String id,
             @RequestBody @Valid AtualizarLocalizacaoDTO dto) {

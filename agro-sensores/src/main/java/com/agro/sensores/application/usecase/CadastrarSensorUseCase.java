@@ -20,8 +20,10 @@ public class CadastrarSensorUseCase {
     private final SensorRepository sensorRepository;
     private final SensorLocalizacaoRepository localizacaoRepository;
 
-    @Transactional
+    @Transactional // a annotation @Transactional nos auxilia
+    // em definir uma "transação" de banco de dados
     public Sensor executar(CriarSensorDTO dto) {
+        // Passo 0: salva o sensor -
         // Criamos o objeto de domínio do Sensor SEM a localização na lista interna por enquanto
         Sensor novoSensor = new Sensor(
                 null,

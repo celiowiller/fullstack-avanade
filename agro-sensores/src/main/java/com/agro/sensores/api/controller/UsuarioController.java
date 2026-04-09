@@ -12,6 +12,7 @@ import com.agro.sensores.application.usecase.CadastrarUsuarioUseCase;
 // Controller de usuários
 @RestController
 @RequestMapping("/usuarios")
+// @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class UsuarioController {
 
@@ -19,7 +20,8 @@ public class UsuarioController {
 
     // Endpoint de cadastro
     @PostMapping
-   // @PreAuthorize("hasRole('ADMIN')")
+    // @PostMapping("/usuarios")
+   //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Void> cadastrar(@RequestBody @Valid UsuarioRequestDTO dto) {
 
     	// Agora o Java reconhece que dto.role() é um UserRole
