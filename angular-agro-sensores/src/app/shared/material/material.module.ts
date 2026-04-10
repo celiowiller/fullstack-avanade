@@ -16,7 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
-
+import { MatTableModule } from '@angular/material/table';
 
 
 @NgModule({ // aqui esta o "decorator" que "transforma" esta classe num angular module
@@ -35,7 +35,8 @@ import { MatSelectModule } from '@angular/material/select';
   MatProgressSpinnerModule,
   MatMenuModule,
   MatListModule,
-  MatSelectModule
+  MatSelectModule,
+  MatTableModule
  ]
 })
 export class MaterialModule { }
