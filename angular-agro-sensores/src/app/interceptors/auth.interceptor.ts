@@ -13,5 +13,5 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => { // a definiç
     })
     return next(clonada) // nós, aqui, estamos enviando a requisição, agora, modificada
   }
-  return next(req); // caso o token não exista, enviamos a requisição original sem modificação
-};
+  return next(req) // caso o token não exista, enviamos a requisição original sem modificação
+}

@@ -53,7 +53,7 @@ public class SensorEntity {
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SensorLocalizacaoEntity> historico;
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, orphanRemoval = true)
+ // Leitura é entidade independente, gerenciada pelo LeituraRepository
+    @OneToMany(mappedBy = "sensor")  // ← Apenas mapeamento, SEM cascade/orphanRemoval
     private List<LeituraEntity> leituras; 
-    // Nota: Verifique se o nome da sua classe de telemetria é TelemetriaEntity ou LeituraEntity
 }

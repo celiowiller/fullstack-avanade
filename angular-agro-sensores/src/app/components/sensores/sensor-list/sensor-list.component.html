@@ -4,30 +4,27 @@
         <mat-icon>sensors</mat-icon>
         <span>{{ tituloComp }}</span>
         <span class="espacador"></span>
-        <button
-           mat-raised-button
-           color="primary"
-        (click) = "navegarParaCadastro()"
-        >    
-        <mat-icon>add</mat-icon>
-        NOVO SENSOR
-       </button>
+         <!-- Botão visível apenas para ADMIN -->
+            @if (ehAdmin()) {
+                <button
+                mat-raised-button
+                color="primary"
+                (click)="navegarParaCadastro()"
+                >    
+                <mat-icon>add</mat-icon>
+                NOVO SENSOR
+                </button>
+            }
     </mat-toolbar>
 
     <div class="table-wrapper">
-        <!-- neste passo, vamos fazer uso da diretiva(directive) estrutural @if(){}
-            a diretiva é composta por uma expressão de avaliação que, a partir do resultado, inclui ou exclui qualquer elemento da view no DOM 
-        -->
-            @if(estaCarregando()){
+        @if(estaCarregando()){
                 <div class="loading-overlay">
                     <mat-spinner diameter="50"></mat-spinner>
                     <p>Sincronizando com os sensores em campo...</p>
                 </div>
             }@else{
-                <!-- se os dados não estão carregando, pode ter ocorrido duas situações:
-                 ou aconteceu alguma falha, ou os dados ja estão carregados. Se aconteceu alguma falha o contexto de observação ja está posto; então, aqui, vamos considerar que os dados estão carregados 
-                -->
-                 <table mat-table [dataSource]="listaDeSensores()" class="mat-elevation-z8">
+                <table mat-table [dataSource]="listaDeSensores()" class="mat-elevation-z8">
 
                     <ng-container matColumnDef="nome">
                         <th mat-header-cell *matHeaderCellDef>Identificador</th>
@@ -37,28 +34,33 @@
                      <ng-container matColumnDef="tipo">
                         <th mat-header-cell *matHeaderCellDef>Grandeza</th>
                         <td mat-cell *matCellDef="let sensor">
-                            <mat-icon class="tipo-icon">assestment</mat-icon>
+                            <mat-icon class="tipo-icon">assessment</mat-icon>
                             {{ sensor.tipo }}
                         </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="localizacao">
-                        <th mat-header-cell *matHeaderCellDef>Coordenadas</th>
-                        <td mat-cell *matCellDef="let sensor">
-                            <mat-icon class="loc-icon">location_on</mat-icon>
-                            {{ sensor.localizacao }}
+                   <ng-container matColumnDef="localizacao">
+                        <th mat-header-cell *matHeaderCellDef>Localização</th>
+                        <td mat-cell *matCellDef="let sensor"> 
+                            <mat-icon class="loc-icon" 
+                                    (click)="alterarLocalizacao(sensor)" 
+                                    style="cursor: pointer;" 
+                                    matTooltip="Clique para mover o sensor">
+                            location_on
+                            </mat-icon>
+                             {{ sensor.localizacao }} 
                         </td>
                     </ng-container>
 
                     <ng-container matColumnDef="status">
                         <th mat-header-cell *matHeaderCellDef>Estado</th>
                         <td mat-cell *matCellDef="let sensor">
-                           <span class="status-badge"                           
+                           <span class="status-badge"                             
                             [class.ativo] = "sensor.ativo" 
                             [class.inativo] = "!sensor.ativo"
                            >
                             {{ sensor.ativo ? 'ONLINE' : 'OFFLINE' }}
-                           </span>                          
+                           </span>                                  
                         </td>
                     </ng-container>
 
@@ -70,7 +72,7 @@
                                 mat-icon-button 
                                 color="primary"
                                 (click) = "verDetalhes(sensor.id)"
-                                matTooTip="Ver os detalhes do sensor"
+                                matTooltip="Ver telemetria e histórico"
                            >
                                 <mat-icon>insights</mat-icon>
                            </button>
@@ -79,25 +81,17 @@
                                 mat-icon-button
                                 color="warn"
                                 (click) = "excluirSensor(sensor.id)"
-                                matToolTip = "Removendo sensor"
+                                matTooltip = "Removendo sensor"
                            >
                                 <mat-icon>delete_forever</mat-icon>
                            </button>
                         </td>
                     </ng-container>
-                    <!-- esta é a "parte final" do "quebra-cabeça" de mat-table 
-                        porque esta duas linhas codigo/marcação determina a ordem de execução/existencia/estrutura de "montagem/criação" da table
-
-                    -->
                     <tr
                         mat-header-row *matHeaderRowDef = "colunasTabela"
-                    ></tr><!-- aqui, criamos a 1ª linha da table(aquela que fica, geralmente, no topo em destaque - "nome da coluna", ou seja, a linha de "cabeçalho" da table)
-                    para este proposito fazemos a referencia ao array que está composta pelos nomes das colunas - colunasTabela -->
-
-                    <tr
+                    ></tr><tr
                         mat-row *matRowDef="let row; columns: colunasTabela;"
-                    ></tr><!-- aqui, temos as linhas de dados; a estrutura de "repetição"; portanto se tivermos um numero x de sensores, vindos do backend esta linhas será repetida para cada um deles. Aqui, temos uma contexto implicito de repetição que atua como um "forEach"-->
-                 </table> 
+                    ></tr></table> 
 
                  @if(listaDeSensores().length === 0){
                     <div class="empty-state">

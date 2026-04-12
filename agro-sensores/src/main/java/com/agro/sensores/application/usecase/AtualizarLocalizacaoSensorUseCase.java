@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.agro.sensores.domain.model.SensorLocalizacao;
 import com.agro.sensores.domain.repository.SensorLocalizacaoRepository;
+import com.agro.sensores.domain.repository.SensorRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,28 +15,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AtualizarLocalizacaoSensorUseCase {
 
-    private final SensorLocalizacaoRepository repository;
+    private final SensorLocalizacaoRepository localizacaoRepository;
+    private final SensorRepository sensorRepository;
 
-    @Transactional // PONTO CRUCIAL: Garante que: ou faz tudo ou não faz nada
+    @Transactional
     public void executar(String sensorId, String novaLocalizacao) {
 
-        // 1. busca localização atual
-        var atualOpt = repository.buscarAtivaPorSensor(sensorId);
+        var sensor = sensorRepository.buscarPorId(sensorId)
+                .orElseThrow(() -> new RuntimeException("Sensor não encontrado"));
 
-        atualOpt.ifPresent(localAtual -> {
-            localAtual.encerrar(LocalDateTime.now());
-            repository.salvar(localAtual);
-        });
+        LocalDateTime agora = LocalDateTime.now();
 
-        // 2. cria nova localização
+        localizacaoRepository.buscarAtivaPorSensor(sensorId)
+                .ifPresent(antigo -> {
+                    antigo.encerrar(agora);
+                    localizacaoRepository.salvar(antigo);
+                });
+
         SensorLocalizacao nova = new SensorLocalizacao(
                 null,
                 sensorId,
                 novaLocalizacao,
-                LocalDateTime.now(),
+                agora,
                 null
         );
 
-        repository.salvar(nova);
+        localizacaoRepository.salvar(nova);
+
+        sensor.alterarLocalizacao(novaLocalizacao);
+        sensorRepository.salvar(sensor);
     }
 }

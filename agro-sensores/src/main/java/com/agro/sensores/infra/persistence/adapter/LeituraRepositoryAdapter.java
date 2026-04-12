@@ -1,7 +1,6 @@
 package com.agro.sensores.infra.persistence.adapter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -18,60 +17,108 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class LeituraRepositoryAdapter implements LeituraRepository {
+
 	private final JpaLeituraRepository jpa;
-	private final JpaSensorRepository sensorRepository;
-	
+	private final JpaSensorRepository sensorJpa;
+
+	@Override
 	public Leitura salvar(Leitura leitura) {
 		return toDomain(jpa.save(toEntity(leitura)));
 	}
-	
-	public List<Leitura> buscarPorSensor(String sensorId){
-		return jpa.findAllBySensor_id(sensorId).stream()
+
+	@Override
+	public List<Leitura> buscarPorSensor(String sensorId) {
+		return jpa.findBySensor_IdOrderByDataHoraDesc(sensorId)
+				.stream()
 				.map(this::toDomain)
-				.collect(Collectors.toList());				
+				.toList();
 	}
+
+	// =========================
+	// ENTITY -> DOMAIN
+	// =========================
+	private Leitura toDomain(LeituraEntity e) {
+
+        SensorEntity se = sensorJpa.findById(e.getSensor().getId())
+                .orElseThrow(() -> new RuntimeException("Sensor não encontrado no banco"));
+
+        if (se.getNome() == null) {
+            throw new RuntimeException("Sensor sem nome no banco: " + se.getId());
+        }
+        Sensor sensor = new Sensor(
+                se.getId(),
+                se.getNome(),
+                se.getLocalizacao(),
+                se.getTipo(),
+                se.isAtivo()
+        );
+
+        return new Leitura(
+                e.getId(),
+                sensor,
+                e.getValor(),
+                e.getDataHora(),
+                e.getLocalizacao()
+        );
+    }
 	
-	// Mapper: Entity -> Domain
-	private Leitura toDomain(LeituraEntity entity) {
-				
-		// 1º. "traduzimos" o "inquilino" (Sensor)
-
-		Sensor sensorDomain = new Sensor(
-				entity.getSensor().getId(),
-				entity.getSensor().getNome(),
-				entity.getSensor().getLocalizacao(),
-				entity.getSensor().getTipo(),
-				entity.getSensor().isAtivo()
-				);
-		// 2º. na sequencia, "montaremos" a Leitura com o Sensor já "traduzido"/acesso
-		return new Leitura(
-					entity.getId(),
-				    sensorDomain, // <---- aqui, passamos o objeto 
-					entity.getValor(),
-					entity.getDataHora(),
-					entity.getLocalizacao() // <--- indicado para o tratamento e uso de UseCases
-				);
-	}
-		
-	private LeituraEntity toEntity(Leitura leitura) {
-
-	    SensorEntity sensorEntity = sensorRepository
-	        .findById(leitura.getSensor().getId())
-	        .orElseThrow(() -> new RuntimeException("Sensor não encontrado"));
-
-	    return new LeituraEntity(
-	        leitura.getId(),
-	        sensorEntity,
-	        leitura.getValor(),
-	        leitura.getDataHora(),
-	        leitura.getLocalizacao() // <--- indicado para o tratamento e uso de UseCases
+	/*private Leitura toDomain(LeituraEntity e) {
+	    // Cria referência leve do sensor (apenas com ID)
+	    Sensor sensorRef = new Sensor(
+	        e.getSensor().getId(),
+	        null, null, null, false // preencha conforme seu construtor
 	    );
+	    
+	    return new Leitura(
+	        e.getId(),
+	        sensorRef,
+	        e.getValor(),
+	        e.getDataHora(),
+	        e.getLocalizacao()
+	    );
+	}*/
+
+	// =========================
+	// DOMAIN -> ENTITY
+	// =========================
+	/*private LeituraEntity toEntity(Leitura d) {
+
+	    LeituraEntity e = new LeituraEntity();
+
+	    e.setId(d.getId());
+	    e.setValor(d.getValor());
+	    e.setDataHora(d.getDataHora());
+	    e.setLocalizacao(d.getLocalizacao());
+
+	    if (d.getSensor() == null || d.getSensor().getId() == null) {
+	        throw new RuntimeException("Sensor não pode ser nulo na Leitura");
+	    }
+
+	    SensorEntity sensorEntity = new SensorEntity();
+	    sensorEntity.setId(d.getSensor().getId());
+
+	    e.setSensor(sensorEntity);
+
+	    return e;
+	}*/
+	private LeituraEntity toEntity(Leitura d) {
+
+	    LeituraEntity e = new LeituraEntity();
+
+	    e.setId(d.getId());
+	    e.setValor(d.getValor());
+	    e.setDataHora(d.getDataHora());
+	    e.setLocalizacao(d.getLocalizacao());
+
+	    if (d.getSensor() == null || d.getSensor().getId() == null) {
+	        throw new RuntimeException("Sensor não pode ser nulo na Leitura");
+	    }
+
+	    SensorEntity sensorRef = new SensorEntity();
+	    sensorRef.setId(d.getSensor().getId());
+
+	    e.setSensor(sensorRef);
+
+	    return e;
 	}
-	
 }
-
-// ***** precisamos observar e relacionar como os dados "serão passados" para a estrutura da
-//Entity - LeituraEntity????? 
-
-// TAMBEM - A PARTIR DA PROVOCAÇÃO DO ELIZEU - PASSAR ALGUNS CAMPOS - COMO POR EXEMPLO... 
-// localização 

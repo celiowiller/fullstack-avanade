@@ -33,7 +33,7 @@ export class LoginComponent {
         error: (erro) => {
           console.error('Erro capturado no componente de login:', erro)
         }
-      });
+      })
     }
   }
 }

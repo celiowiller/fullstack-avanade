@@ -1,0 +1,49 @@
+.telemetria-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  background: none; /* Garante que não haja tarjas de fundo */
+}
+
+.telemetria-card {
+  width: 100%;
+  max-width: 600px;
+  padding: 8px;
+}
+
+/* Estilização do Select amigável */
+.sensor-option-name {
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.sensor-option-type {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.flex-item {
+  flex: 1;
+}
+
+/* Ajuste para evitar que o ícone trunque o input */
+mat-icon[matSuffix] {
+  margin-right: 8px;
+  color: #757575;
+}
+
+/* Removemos bordas ou backgrounds das ações do card para evitar a tarja cinza */
+mat-card-actions {
+  padding: 16px 0 0 0;
+  background: transparent;
+}

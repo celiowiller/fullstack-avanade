@@ -1,0 +1,95 @@
+.detail-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-detail {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 16px;
+}
+
+.header-detail h1 {
+  margin: 0;
+  font-weight: 300;
+  color: #333;
+}
+
+/* Layout em Grid para separar Info de Histórico */
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Info menor à esquerda, Histórico maior à direita */
+  gap: 24px;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info-card {
+  height: fit-content;
+  border-left: 5px solid #3f51b5;
+}
+
+.history-card {
+  border-left: 5px solid #ff9800; /* Cor de alerta/histórico */
+}
+
+/* Estilização de Status Online/Offline */
+.online {
+  color: #2e7d32;
+  font-weight: bold;
+  background: #e8f5e9;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.offline {
+  color: #c62828;
+  font-weight: bold;
+  background: #ffebee;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Badge de Localização Atual */
+.current-label {
+  background-color: #4caf50;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.empty-msg {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+  color: #666;
+}
+
+/* Estilo para itens da lista de histórico */
+mat-list-item {
+  height: auto !important;
+  padding: 12px 0 !important;
+}
+
+[matListItemIcon] {
+  color: #ff9800;
+}

@@ -19,35 +19,31 @@ import lombok.RequiredArgsConstructor;
 public class SensorLocalizacaoRepositoryAdapter implements SensorLocalizacaoRepository {
 
     private final JpaSensorLocalizacaoRepository jpa;
- // 1. Injetando o repositório que você acabou de mostrar
     private final JpaSensorRepository sensorJpa;
 
     @Override
-    public SensorLocalizacao salvar(SensorLocalizacao localizacao) {
-        return toDomain(jpa.save(toEntity(localizacao)));
+    public SensorLocalizacao salvar(SensorLocalizacao d) {
+        return toDomain(jpa.save(toEntity(d)));
     }
 
     @Override
     public Optional<SensorLocalizacao> buscarAtivaPorSensor(String sensorId) {
-        // Usando o novo método que evita o erro de duplicidade
         return jpa.findFirstBySensor_IdAndDataFimIsNullOrderByDataInicioDesc(sensorId)
-                  .map(this::toDomain);
+                .map(this::toDomain);
     }
 
+    @Override
     public Optional<SensorLocalizacao> buscarPorSensorEData(String sensorId, LocalDateTime data) {
         return jpa.buscarPorSensorEData(sensorId, data)
-                  .map(this::toDomain);
+                .map(this::toDomain);
     }
-    
- // Adicionando esta implementação no seu Adapter
+
     @Override
- // No SensorLocalizacaoRepositoryAdapter
-     public List<SensorLocalizacao> buscarTodosPorSensor(String sensorId) { 
-    	// Alinhado com a Interface
+    public List<SensorLocalizacao> buscarTodosPorSensor(String sensorId) {
         return jpa.findAllBySensor_IdOrderByDataInicioDesc(sensorId)
-                  .stream()
-                  .map(this::toDomain)
-                  .toList(); // Se der erro no toList, usamos .collect(Collectors.toList())
+                .stream()
+                .map(this::toDomain)
+                .toList();
     }
 
     private SensorLocalizacao toDomain(SensorLocalizacaoEntity e) {
@@ -61,18 +57,18 @@ public class SensorLocalizacaoRepositoryAdapter implements SensorLocalizacaoRepo
     }
 
     private SensorLocalizacaoEntity toEntity(SensorLocalizacao d) {
-        SensorLocalizacaoEntity entity = new SensorLocalizacaoEntity();
-        entity.setId(d.getId());
-        entity.setLocalizacao(d.getLocalizacao());
-        entity.setDataInicio(d.getDataInicio());
-        entity.setDataFim(d.getDataFim());
 
-        // 2. Vinculando o Sensor usando o ID que vem do domínio
-        if (d.getSensorId() != null) {
-            // getReferenceById evita um SELECT desnecessário
-            entity.setSensor(sensorJpa.getReferenceById(d.getSensorId()));
-        }
+        SensorLocalizacaoEntity e = new SensorLocalizacaoEntity();
 
-        return entity;
+        e.setId(d.getId());
+        e.setLocalizacao(d.getLocalizacao());
+        e.setDataInicio(d.getDataInicio());
+        e.setDataFim(d.getDataFim());
+
+        e.setSensor(
+                sensorJpa.getReferenceById(d.getSensorId())
+        );
+
+        return e;
     }
 }

@@ -40,8 +40,12 @@ public class SensorLocalizacao {
         this.dataFim = dataFim;
     }
 
-    public void encerrar(LocalDateTime dataFim) {
-        this.dataFim = dataFim;
+ // MÉTODO PARA ENCERRAR A LOCALIZAÇÃO
+    public void encerrar(LocalDateTime dataEncerramento) {
+        if (this.dataFim != null) {
+            throw new RuntimeException("Esta localização já foi encerrada!");
+        }
+        this.dataFim = dataEncerramento;
     }
 
     public boolean isAtivo() {

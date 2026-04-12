@@ -9,12 +9,12 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Sensor {
-	private String id;
-	private String nome;
-	private String localizacao;
-	private TipoSensor tipo;
-	private boolean ativo;
-	
+    private String id;
+    private String nome;
+    private String localizacao; // No domínio está localizacao
+    private TipoSensor tipo;
+    private boolean ativo;
+    
 	public Sensor(
 			String id, 
 			String nome,
@@ -43,16 +43,17 @@ public class Sensor {
 		this.ativo = ativo;
 	}
 	
+	// *** EXTRA - MÉTODO NOVO: Permite que o UseCase atualize o estado atual do sensor
+    public void alterarLocalizacao(String novaLocalizacao) {
+        if(novaLocalizacao == null || novaLocalizacao.isBlank()) {
+            throw new ValidacaoException("A nova localização não pode ser vazia!");
+        }
+        this.localizacao = novaLocalizacao;
+    }
+	
 	// comportamentos do dominio
-	public void ativar() {
-		this.ativo = true;
-	}
-	
-	public void desativar() {
-		this.ativo = false;
-	}
-	
-	public boolean isAtivo() {
-		return ativo;
-	}
+    public void ativar() { this.ativo = true; }
+    public void desativar() { this.ativo = false; }
+
+    public boolean isAtivo() { return ativo; }
 }

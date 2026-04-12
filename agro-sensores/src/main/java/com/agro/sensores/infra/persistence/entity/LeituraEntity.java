@@ -22,16 +22,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+//@EqualsAndHashCode(of = "id")
 public class LeituraEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	// Relacionamento com sensor(muitos para um)
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "sensor_id", nullable = false)
-	//@com.fasterxml.jackson.annotation.JsonIgnore // <--- ADICIONE ISSO AQUI
 	private SensorEntity sensor;
 	
 	// valor da leitura

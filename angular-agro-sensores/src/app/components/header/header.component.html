@@ -1,27 +1,30 @@
 <mat-toolbar color="primary" class="header-toolbar mat-elevation-z6">
-  <div class="logo-section" routerLink="/home">
+  <div class="logo-section" routerLink="/telemetria/dashboard" style="cursor: pointer;">
     <mat-icon class="logo-icon">agriculture</mat-icon>
-    <span class="titulo-sistema">Agro Telemetria AERS</span>
+    <span class="titulo-sistema">Agro Telemetria</span>
   </div>
 
   <span class="espacador"></span>
 
   @if (estaLogado()) {
     <nav class="nav-links">
-      <button mat-button routerLink="/home" routerLinkActive="active-link">
-        <mat-icon>home</mat-icon>
-        HOME
-      </button>
-
-      <button mat-button routerLink="/sensores" routerLinkActive="active-link">
+      <button mat-button routerLink="/sensores" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
         <mat-icon>sensors</mat-icon>
         SENSORES
       </button>
 
-      <button mat-button routerLink="/dashboard" routerLinkActive="active-link">
+      <button mat-button routerLink="/telemetria/dashboard" routerLinkActive="active-link">
         <mat-icon>bar_chart</mat-icon>
         DASHBOARD
       </button>
+
+       <!-- otão SIMULADOR visível apenas para ADMIN -->
+      @if (ehAdmin()) {
+        <button mat-button routerLink="/telemetria/simulador" routerLinkActive="active-link">
+          <mat-icon>send</mat-icon>
+          SIMULADOR
+        </button>
+      }
     </nav>
 
     <div class="user-section">
@@ -29,6 +32,11 @@
         <mat-icon>account_circle</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
+        <button mat-menu-item routerLink="/configuracoes/novo-sensor">
+          <mat-icon>add</mat-icon>
+          <span>Novo Sensor (Admin)</span>
+        </button>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="sair()">
           <mat-icon color="warn">logout</mat-icon>
           <span>Encerrar Sessão</span>

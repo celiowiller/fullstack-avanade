@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MaterialModule } from '../../shared/material/material.module';
 import { UsuarioService } from '../../services/usuario.service';
+import { UserRoleModel } from '../../models/user-role.model';
 
 /**
- * Componente de navegação principal (Header).
- * Utiliza Signals para reagir ao estado de autenticação em tempo real.
+  Componente de navegação principal (Header).
+  Utiliza Signals para reagir ao estado de autenticação em tempo real.
  */
 @Component({
-  selector: 'app-header', 
+  selector: 'app-header',
+  standalone: true, // Importante para componentes modernos
   imports: [
     CommonModule, 
     MaterialModule, 
@@ -20,25 +22,20 @@ import { UsuarioService } from '../../services/usuario.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  // Injeção dos serviços necessários para a lógica do Header
-  private servicoUsuario = inject(UsuarioService);
-  private roteador = inject(Router);
+  private servicoUsuario = inject(UsuarioService)
+  private roteador = inject(Router)
 
-  /**
-   * SIGNAL COMPUTADO: estaLogado()
-   * Este sinal observa o estado dentro do UsuarioService. 
-   * Sempre que o serviço executar o .set() no sinal de login, 
-   * este componente será notificado automaticamente para atualizar o HTML.
-   */
-  public estaLogado = computed(() => this.servicoUsuario.estaLogado());
+  /* Signal computado: usuário está logado? */
+  public estaLogado = computed(() => this.servicoUsuario.estaLogado())
 
-  /**
-   * Método para encerrar a sessão.
-   * Aciona a limpeza do localStorage e do Signal no serviço,
-   * garantindo que os links de navegação desapareçam imediatamente.
-   */
+  /* Signal computado: usuário é ADMIN? */  // ← ADICIONE ESTE SIGNAL
+  public ehAdmin = computed(() => 
+    this.servicoUsuario.estaLogado() && 
+    this.servicoUsuario.obterRole() === UserRoleModel.ADMIN
+  );
+
   sair(): void {
     this.servicoUsuario.logout();
-    this.roteador.navigate(['/login']);
+    this.roteador.navigate(['/login'])
   }
 }

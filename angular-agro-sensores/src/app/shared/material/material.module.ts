@@ -17,7 +17,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 
 @NgModule({ // aqui esta o "decorator" que "transforma" esta classe num angular module
   /*declarations: [],
@@ -36,7 +36,8 @@ import { MatTableModule } from '@angular/material/table';
   MatMenuModule,
   MatListModule,
   MatSelectModule,
-  MatTableModule
+  MatTableModule,
+  MatSlideToggleModule
  ]
 })
 export class MaterialModule { }

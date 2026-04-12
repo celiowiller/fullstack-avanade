@@ -9,7 +9,7 @@
       <form [formGroup]="loginFormulario" (ngSubmit)="aoSubmeter()">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Login do Usuário</mat-label>
-          <input matInput formControlName="login" placeholder="Ex: celio.souza">
+          <input matInput formControlName="login" placeholder="Ex: seu.login@mail.com">
           @if (loginFormulario.get('login')?.invalid && loginFormulario.get('login')?.touched) {
             <mat-error>O login é obrigatório.</mat-error>
           }

@@ -7,62 +7,49 @@ import { SensorModel } from '../models/sensor.model';
   providedIn: 'root'
 })
 export class SensorService {
-  /**
-   * Injeção do HttpClient utilizando o padrão funcional.
-   * Não utilizamos mais o construtor para manter a classe limpa e moderna.
-   */
   private readonly http = inject(HttpClient);
+  private readonly API_URL = 'http://localhost:8080/sensores'
 
-  /**
-   * URL base do backend Spring Boot definida no seu ecossistema.
-   * Alinhado com o mapeamento @RequestMapping("/sensores") do seu Controller.
-   */
-  private readonly API_URL = 'http://localhost:8080/sensores';
-
-  /**
-   * Recupera a lista completa de sensores cadastrados no banco de dados.
-   * Conecta-se ao método buscarTodos() do seu SensorRepository.
-   * retornando um Observable contendo um array de objetos Sensor.
-   */
+  /** 1. LISTAR TODOS */
   buscarTodos(): Observable<SensorModel[]> {
-    return this.http.get<SensorModel[]>(this.API_URL);
+    return this.http.get<SensorModel[]>(this.API_URL)
   }
 
-  /**
-   * Busca os detalhes de um sensor específico através do seu Identificador Único (UUID).
-   * parametro id Identificador do sensor.
-   * retornando um Observable de um único objeto Sensor.
-   */
+  /** 5. BUSCAR POR ID */
   buscarPorId(id: string): Observable<SensorModel> {
-    return this.http.get<SensorModel>(`${this.API_URL}/${id}`);
+    return this.http.get<SensorModel>(`${this.API_URL}/${id}`)
   }
 
-  /**
-   * Persiste um novo sensor no sistema ou atualiza um existente.
-   * Este método aciona a lógica de validação do seu domínio Java (ValidacaoException).
-   * parametro sensor Objeto contendo os dados do sensor (nome, tipo, localização, ativo).
-   * retornando Observable do sensor persistido com o ID gerado pelo banco.
-   */
-  salvar(sensor: SensorModel): Observable<SensorModel> {
-    return this.http.post<SensorModel>(this.API_URL, sensor);
+  /** 1. CRIAR SENSOR (ADMIN) */
+  salvar(sensor: Partial<SensorModel>): Observable<void> {
+    return this.http.post<void>(this.API_URL, sensor)
   }
 
-  /**
-   * Remove um sensor do sistema de telemetria.
-   * parametro id Identificador do sensor a ser removido.
-   * retornando Observable void indicando o sucesso da operação.
-   */
+  /** 2. ATUALIZAR NOME (ADMIN) 
+      Alinhado com AtualizarSensorUseCase e o DTO AtualizarSensorDTO 
+  */
+  atualizarNome(id: string, nome: string): Observable<void> {
+    return this.http.put<void>(`${this.API_URL}/${id}`, { nome })
+  }
+
+  /** 7. ATUALIZAR LOCALIZAÇÃO (ADMIN)
+      Aciona o UseCase que encerra a localização antiga e cria uma nova (Temporal)
+  */
+  atualizarLocalizacao(id: string, localizacao: string): Observable<void> {
+      return this.http.put<void>(`${this.API_URL}/${id}/localizacao`, {
+      localizacao: localizacao
+    })
+  }
+
+  /** 6. DELETAR SENSOR (ADMIN) */
   deletar(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/${id}`)
   }
 
-  /**
-   * Alterna o estado de ativação do sensor.
-   * parametro id Identificador do sensor.
-   * parametro status Boolean indicando se o sensor deve ser ativado ou desativado.
+  /** * EXTRA: BUSCAR COM LEITURAS 
+   * Consome o endpoint 4 do seu Controller
    */
-  alterarStatus(id: string, status: boolean): Observable<SensorModel> {
-    // Exemplo de PATCH para economia de banda em telemetria
-    return this.http.patch<SensorModel>(`${this.API_URL}/${id}/status`, { ativo: status });
+  buscarComLeituras(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/com-leituras`)
   }
 }
